@@ -4,17 +4,14 @@
 import nock from "nock";
 // Requiring our app implementation
 import myProbotApp from "../src";
-import { Probot, ProbotOctokit } from "probot";
+import {Probot, ProbotOctokit} from "probot";
 // Requiring our fixtures
 import payload from "./fixtures/issues.opened.json";
-const issueCreatedBody = { body: "Thanks for opening this issue!" };
+const issueCreatedBody = {body: "Thanks for opening this issue!"};
 const fs = require("fs");
 const path = require("path");
 
-const privateKey = fs.readFileSync(
-  path.join(__dirname, "fixtures/mock-cert.pem"),
-  "utf-8"
-);
+const privateKey = fs.readFileSync(path.join(__dirname, "fixtures/mock-cert.pem"), "utf-8");
 
 describe("My Probot app", () => {
   let probot: any;
@@ -26,8 +23,8 @@ describe("My Probot app", () => {
       privateKey,
       // disable request throttling and retries for testing
       Octokit: ProbotOctokit.defaults({
-        retry: { enabled: false },
-        throttle: { enabled: false },
+        retry: {enabled: false},
+        throttle: {enabled: false},
       }),
     });
     // Load our app into probot
@@ -53,7 +50,7 @@ describe("My Probot app", () => {
       .reply(200);
 
     // Receive a webhook event
-    await probot.receive({ name: "issues", payload });
+    await probot.receive({name: "issues", payload});
 
     expect(mock.pendingMocks()).toStrictEqual([]);
   });

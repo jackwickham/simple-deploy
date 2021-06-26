@@ -30,4 +30,4 @@ For more, check out the [Contributing Guide](CONTRIBUTING.md).
 
 ## License
 
-[ISC](LICENSE) © 2021 Jack Wickham <jack@jackw.net>
+[ISC](LICENSE) © 2021 Jack Wickham

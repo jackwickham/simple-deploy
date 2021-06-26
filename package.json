@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "description": "Create a github deployment and use it to deploy main when new commits are made",
-  "author": "Jack Wickham <jack@jackw.net>",
-  "license": "ISC",
+  "author": "Jack Wickham",
+  "license": "MIT",
   "homepage": "https://github.com/jackwickham/simple-deploy",
   "keywords": [
     "probot",
@@ -14,16 +14,27 @@
   "scripts": {
     "build": "tsc",
     "start": "probot run ./lib/index.js",
-    "test": "jest"
+    "test": "jest",
+    "format": "prettier --write **/*.ts",
+    "format-check": "prettier --check **/*.ts",
+    "lint": "eslint src/**/*.ts"
   },
   "dependencies": {
+    "@octokit/rest": "^18.6.2",
+    "js-yaml": "^4.1.0",
     "probot": "^11.0.1"
   },
   "devDependencies": {
     "@types/jest": "^26.0.19",
+    "@types/js-yaml": "^4.0.1",
     "@types/node": "^14.14.19",
+    "@typescript-eslint/eslint-plugin": "^4.28.0",
+    "@typescript-eslint/parser": "^4.28.0",
+    "eslint": "^7.29.0",
+    "eslint-plugin-jest": "^24.3.6",
     "jest": "^26.6.3",
     "nock": "^13.0.5",
+    "prettier": "^2.3.2",
     "smee-client": "^1.2.2",
     "ts-jest": "^26.4.4",
     "typescript": "^4.1.3"
