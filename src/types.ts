@@ -10,6 +10,7 @@ export interface WorkerArgs {
 
 export interface Config {
   services: Service[];
+  errorFile?: string;
 }
 
 export interface Service {

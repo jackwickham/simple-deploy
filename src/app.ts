@@ -7,6 +7,7 @@ import {Config, WorkerArgs} from "./types";
 export default async function deployApp(app: Probot): Promise<void> {
   const configFile = await fs.readFile(".config.yml", "utf-8");
   const config = yaml.load(configFile) as Config;
+  const errorFile = config.errorFile ? (await fs.open(config.errorFile, "a")).fd : "ignore";
 
   app.on("deployment.created", async (context) => {
     const repo = context.repo();
@@ -41,10 +42,9 @@ export default async function deployApp(app: Probot): Promise<void> {
       deploymentId: context.payload.deployment.id,
       steps: service.steps,
     };
-
-    const child = fork(__dirname + "/standalone.js", {
+    const child = fork(__dirname + "/standalone.js", [], {
       detached: true,
-      stdio: "inherit",
+      stdio: ["ipc", errorFile, errorFile],
     });
     child.send(args);
 
