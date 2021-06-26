@@ -1,7 +1,7 @@
 import {WorkerArgs} from "./types";
 import {spawn} from "child_process";
 import {Octokit} from "@octokit/rest";
-import loggerFactory, { Logger } from "pino";
+import loggerFactory, {Logger} from "pino";
 
 process.on("message", async (args: WorkerArgs) => {
   const octokit = new Octokit({
@@ -28,6 +28,7 @@ process.on("message", async (args: WorkerArgs) => {
     let initialCommit: string;
     try {
       initialCommit = await context.getCurrentCommit();
+      await context.fetch();
       await context.checkout(args.commitHash);
     } catch (e) {
       log.error(e, "Failed to checkout commit");
@@ -46,6 +47,8 @@ process.on("message", async (args: WorkerArgs) => {
       } catch (nestedException) {
         log.error(nestedException, "Failed to roll back");
       }
+      await context.report("failure");
+      return;
     }
 
     await context.report("success");
@@ -62,9 +65,12 @@ class Context {
     return (await this.exec("git", ["rev-parse", "HEAD"])).trim();
   }
 
+  public async fetch(): Promise<void> {
+    await this.exec("git", ["fetch", "--quiet"]);
+  }
+
   public async checkout(commit: string): Promise<void> {
     await this.exec("git", ["checkout", commit, "--quiet"]);
-    await this.exec("git", ["fetch", "--quiet"]);
   }
 
   public async runSteps(): Promise<void> {
@@ -83,12 +89,13 @@ class Context {
   }
 
   private async exec(command: string, args: string[]): Promise<string> {
-    const child = spawn(command, args, {cwd: this.args.dir, stdio: ['ignore', 'pipe', 'pipe']});
+    const child = spawn(command, args, {cwd: this.args.dir, stdio: ["ignore", "pipe", "pipe"]});
     const processLogger = this.log.child({
-      command, args
+      command,
+      args,
     });
     let output = "";
-    child.stdout.on("data", (data) => output += data.toString());
+    child.stdout.on("data", (data) => (output += data.toString()));
     child.stderr.on("data", (data) => processLogger.warn({stderr: data.toString()}));
     return new Promise((resolve, reject) => {
       child.on("exit", (code) => {

@@ -2,16 +2,8 @@
 // import index from '../src/index'
 
 import nock from "nock";
-// Requiring our app implementation
-import myProbotApp from "../src";
+import deployApp from "../src/app";
 import {Probot, ProbotOctokit} from "probot";
-// Requiring our fixtures
-import payload from "./fixtures/issues.opened.json";
-const issueCreatedBody = {body: "Thanks for opening this issue!"};
-const fs = require("fs");
-const path = require("path");
-
-const privateKey = fs.readFileSync(path.join(__dirname, "fixtures/mock-cert.pem"), "utf-8");
 
 describe("My Probot app", () => {
   let probot: any;
@@ -19,8 +11,7 @@ describe("My Probot app", () => {
   beforeEach(() => {
     nock.disableNetConnect();
     probot = new Probot({
-      appId: 123,
-      privateKey,
+      githubToken: "test",
       // disable request throttling and retries for testing
       Octokit: ProbotOctokit.defaults({
         retry: {enabled: false},
@@ -28,10 +19,15 @@ describe("My Probot app", () => {
       }),
     });
     // Load our app into probot
-    probot.load(myProbotApp);
+    probot.load(deployApp);
   });
 
-  test("creates a comment when an issue is opened", async (done) => {
+  afterEach(() => {
+    expect(nock.pendingMocks()).toEqual([]);
+    expect(nock.isDone()).toBe(true);
+  });
+
+  /*test("creates a comment when an issue is opened", async (done) => {
     const mock = nock("https://api.github.com")
       // Test that we correctly return a test token
       .post("/app/installations/2/access_tokens")
@@ -53,19 +49,5 @@ describe("My Probot app", () => {
     await probot.receive({name: "issues", payload});
 
     expect(mock.pendingMocks()).toStrictEqual([]);
-  });
-
-  afterEach(() => {
-    nock.cleanAll();
-    nock.enableNetConnect();
-  });
+  });*/
 });
-
-// For more information about testing with Jest see:
-// https://facebook.github.io/jest/
-
-// For more information about using TypeScript in your tests, Jest recommends:
-// https://github.com/kulshekhar/ts-jest
-
-// For more information about testing with Nock see:
-// https://github.com/nock/nock
