@@ -80,7 +80,7 @@ export default async function deployApp(app: Probot): Promise<void> {
         child.unref();
         if (m.ack === true) {
           // Child is happy, let it do its thing
-          context.log.info(`Running deployment`);
+          context.log.info(`Running deployment (pid ${child.pid})`);
         } else {
           context.log.error(`Deployment init failed`);
           await context.octokit.repos.createDeploymentStatus(

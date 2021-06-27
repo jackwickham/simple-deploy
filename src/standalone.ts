@@ -3,12 +3,14 @@ import {Octokit} from "@octokit/rest";
 import loggerFactory, {Logger} from "pino";
 import {WorkerArgs} from "./types";
 
-process.on("message", async (args: WorkerArgs) => {
+const fn = async (args: WorkerArgs): Promise<void> => {
   const octokit = new Octokit({
     auth: args.token,
     previews: ["flash"],
   });
-  const log = loggerFactory().child({
+  const log = loggerFactory({
+    level: process.env.LOG_LEVEL || "debug",
+  }).child({
     repoOwner: args.repoOwner,
     repo: args.repo,
     deploymentId: args.deploymentId,
@@ -57,7 +59,9 @@ process.on("message", async (args: WorkerArgs) => {
   } catch (e) {
     log.error(e, "Unhandled exception");
   }
-});
+};
+
+process.on("message", fn);
 
 class Context {
   public constructor(private args: WorkerArgs, private octokit: Octokit, private log: Logger) {}
@@ -90,17 +94,19 @@ class Context {
   }
 
   private async exec(command: string, args: string[]): Promise<string> {
-    const child = spawn(command, args, {cwd: this.args.dir, stdio: ["ignore", "pipe", "pipe"]});
     const processLogger = this.log.child({
       command,
       args,
     });
+    processLogger.debug("Starting subprocess");
+    const child = spawn(command, args, {cwd: this.args.dir, stdio: ["ignore", "pipe", "pipe"]});
     let output = "";
     child.stdout.on("data", (data) => (output += data.toString()));
     child.stderr.on("data", (data) => processLogger.warn({stderr: data.toString()}));
     return new Promise((resolve, reject) => {
       child.on("exit", (code) => {
         if (code === 0) {
+          processLogger.debug("Subprocess finished successfully");
           resolve(output);
         } else {
           processLogger.error("Subprocess failed with exit code %d", code);
