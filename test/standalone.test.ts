@@ -41,7 +41,11 @@ describe("Standalone", () => {
 
     expect(spawnMock).toHaveBeenCalledTimes(4);
     expect(spawnMock).toHaveBeenCalledWith("git", ["rev-parse", "HEAD"], SPAWN_OPTS);
-    expect(spawnMock).toHaveBeenCalledWith("git", ["fetch", "--quiet"], SPAWN_OPTS);
+    expect(spawnMock).toHaveBeenCalledWith(
+      "git",
+      ["fetch", "--quiet", `https://x-access-token:${TOKEN}@github.com/${REPO_OWNER}/${REPO}.git`],
+      SPAWN_OPTS
+    );
     expect(spawnMock).toHaveBeenCalledWith("git", ["checkout", COMMIT_HASH, "--quiet"], SPAWN_OPTS);
     expect(spawnMock).toHaveBeenCalledWith("cmd", ["arg1", "arg2"], SPAWN_OPTS);
   });
@@ -67,7 +71,11 @@ describe("Standalone", () => {
 
     expect(spawnMock).toHaveBeenCalledTimes(3);
     expect(spawnMock).toHaveBeenCalledWith("git", ["rev-parse", "HEAD"], SPAWN_OPTS);
-    expect(spawnMock).toHaveBeenCalledWith("git", ["fetch", "--quiet"], SPAWN_OPTS);
+    expect(spawnMock).toHaveBeenCalledWith(
+      "git",
+      ["fetch", "--quiet", `https://x-access-token:${TOKEN}@github.com/${REPO_OWNER}/${REPO}.git`],
+      SPAWN_OPTS
+    );
     expect(spawnMock).toHaveBeenCalledWith("git", ["checkout", COMMIT_HASH, "--quiet"], SPAWN_OPTS);
   });
 
@@ -99,7 +107,15 @@ describe("Standalone", () => {
 
     expect(spawnMock.mock.calls).toEqual([
       ["git", ["rev-parse", "HEAD"], SPAWN_OPTS],
-      ["git", ["fetch", "--quiet"], SPAWN_OPTS],
+      [
+        "git",
+        [
+          "fetch",
+          "--quiet",
+          `https://x-access-token:${TOKEN}@github.com/${REPO_OWNER}/${REPO}.git`,
+        ],
+        SPAWN_OPTS,
+      ],
       ["git", ["checkout", COMMIT_HASH, "--quiet"], SPAWN_OPTS],
       ["step1", [], SPAWN_OPTS],
       ["step2", [], SPAWN_OPTS],

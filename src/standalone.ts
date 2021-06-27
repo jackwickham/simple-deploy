@@ -71,7 +71,11 @@ class Context {
   }
 
   public async fetch(): Promise<void> {
-    await this.exec("git", ["fetch", "--quiet"]);
+    await this.exec("git", [
+      "fetch",
+      "--quiet",
+      `https://x-access-token:${this.args.token}@github.com/${this.args.repoOwner}/${this.args.repo}.git`,
+    ]);
   }
 
   public async checkout(commit: string): Promise<void> {
