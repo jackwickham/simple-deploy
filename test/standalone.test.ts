@@ -53,7 +53,7 @@ describe("Standalone", () => {
         {
           exitCode: 1,
         },
-      ]
+      ],
     ]);
 
     nock("https://api.github.com")
@@ -133,9 +133,7 @@ describe("Standalone", () => {
     });
   }
 
-  function mockSpawn(
-    overrides: SpawnOverride[] = []
-  ): jest.Mock {
+  function mockSpawn(overrides: SpawnOverride[] = []): jest.Mock {
     spawnOverrides = overrides;
     const spawnMock = jest.fn((cmd, args) => {
       const key = [cmd, ...args];

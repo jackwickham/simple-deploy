@@ -5,11 +5,10 @@ import {promises as fs} from "fs";
 import {Config, WorkerArgs} from "./types";
 
 export default async function deployApp(app: Probot): Promise<void> {
-  const configFile = await fs.readFile(".config.yml", "utf-8");
-  const config = yaml.load(configFile) as Config;
-  const errorFile = config.errorFile ? (await fs.open(config.errorFile, "a")).fd : "ignore";
-
   app.on("deployment.created", async (context) => {
+    const configFile = await fs.readFile(".config.yml", "utf-8");
+    const config = yaml.load(configFile) as Config;
+
     const repo = context.repo();
     const service = config.services.find(
       (svc) =>
@@ -42,45 +41,50 @@ export default async function deployApp(app: Probot): Promise<void> {
       deploymentId: context.payload.deployment.id,
       steps: service.steps,
     };
+    const errorFile = config.errorFile ? (await fs.open(config.errorFile, "a")).fd : "ignore";
     const child = fork(__dirname + "/standalone.js", [], {
       detached: true,
       stdio: ["ipc", errorFile, errorFile],
     });
     child.send(args);
 
-    const timeout = setTimeout(async () => {
-      const exitCode = child.exitCode;
-      child.disconnect();
-      child.unref();
-      if (exitCode !== null) {
-        context.log.error(`Deployment script exited with code ${exitCode}`);
-      } else {
-        context.log.error(`Deployment init timed out`);
-      }
-      await context.octokit.repos.createDeploymentStatus(
-        context.repo({
-          deployment_id: context.payload.deployment.id,
-          state: "error",
-        })
-      );
-    }, 1000);
-
-    child.on("message", async (m: {ack: boolean}) => {
-      clearTimeout(timeout);
-      child.disconnect();
-      child.unref();
-      if (m.ack === true) {
-        // Child is happy, let it do its thing
-        context.log.info(`Running deployment`);
-      } else {
-        context.log.error(`Deployment init failed`);
+    await new Promise<void>((resolve) => {
+      const timeout = setTimeout(async () => {
+        const exitCode = child.exitCode;
+        if (exitCode !== null) {
+          context.log.error(`Deployment script exited with code ${exitCode}`);
+        } else {
+          child.disconnect();
+          child.unref();
+          context.log.error(`Deployment init timed out`);
+        }
         await context.octokit.repos.createDeploymentStatus(
           context.repo({
             deployment_id: context.payload.deployment.id,
             state: "error",
           })
         );
-      }
+        resolve();
+      }, 1000);
+
+      child.on("message", async (m: {ack: boolean}) => {
+        clearTimeout(timeout);
+        child.disconnect();
+        child.unref();
+        if (m.ack === true) {
+          // Child is happy, let it do its thing
+          context.log.info(`Running deployment`);
+        } else {
+          context.log.error(`Deployment init failed`);
+          await context.octokit.repos.createDeploymentStatus(
+            context.repo({
+              deployment_id: context.payload.deployment.id,
+              state: "error",
+            })
+          );
+        }
+        resolve();
+      });
     });
   });
 }
