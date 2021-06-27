@@ -159,5 +159,5 @@ describe("app", () => {
     mockChildProcess = child;
 
     await probot.receive({name: "deployment", payload});
-  })
+  });
 });

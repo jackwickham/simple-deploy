@@ -1,7 +1,7 @@
-import {WorkerArgs} from "./types";
 import {spawn} from "child_process";
 import {Octokit} from "@octokit/rest";
 import loggerFactory, {Logger} from "pino";
+import {WorkerArgs} from "./types";
 
 process.on("message", async (args: WorkerArgs) => {
   const octokit = new Octokit({
@@ -19,6 +19,7 @@ process.on("message", async (args: WorkerArgs) => {
   try {
     // Report back to the caller to say we're happy and running - we now guarantee to report back the
     // deployment status when we're done
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     process.send!({
       ack: true,
     });

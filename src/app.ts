@@ -1,7 +1,7 @@
-import {Probot} from "probot";
 import {fork} from "child_process";
-import yaml from "js-yaml";
 import {promises as fs} from "fs";
+import {Probot} from "probot";
+import yaml from "js-yaml";
 import {Config, WorkerArgs} from "./types";
 
 export default async function deployApp(app: Probot): Promise<void> {

@@ -1,0 +1,18 @@
+name: "build-test"
+on:
+  push: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          npm ci
+          npm run build
+          npm run check
+      - uses: altinukshini/deployment-action@releases/v1
+        if: ${{ github.ref == 'refs/heads/main' }}
+        with:
+          token: "${{ github.token }}"
+          ref: "${{ github.sha }}"
