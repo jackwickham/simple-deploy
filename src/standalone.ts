@@ -9,7 +9,7 @@ const fn = async (args: WorkerArgs): Promise<void> => {
     previews: ["flash"],
   });
   const log = loggerFactory({
-    level: process.env.LOG_LEVEL || "debug",
+    level: process.env.LOG_LEVEL || "info",
   }).child({
     repoOwner: args.repoOwner,
     repo: args.repo,
@@ -102,7 +102,7 @@ class Context {
       command,
       args,
     });
-    processLogger.debug("Starting subprocess");
+    processLogger.info("Starting subprocess");
     const child = spawn(command, args, {cwd: this.args.dir, stdio: ["ignore", "pipe", "pipe"]});
     let output = "";
     child.stdout.on("data", (data) => (output += data.toString()));
