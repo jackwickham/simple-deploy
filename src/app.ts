@@ -23,15 +23,17 @@ export default async function deployApp(app: Probot): Promise<void> {
       return;
     }
 
-    context.log.info(`Starting deployment for ${repo.owner}/${repo.repo} ${context.payload.deployment.environment}`);
+    context.log.info(
+      `Starting deployment for ${repo.owner}/${repo.repo} ${context.payload.deployment.environment}`
+    );
 
     await context.octokit.repos.createDeploymentStatus(
       context.repo({
         deployment_id: context.payload.deployment.id,
         state: "in_progress",
         headers: {
-          accept: 'application/vnd.github.flash-preview+json'
-        }
+          accept: "application/vnd.github.flash-preview+json",
+        },
       })
     );
 
