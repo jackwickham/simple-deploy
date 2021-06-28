@@ -12,7 +12,7 @@ jobs:
           npm run build
           npm run check
         name: Build-test
-      - uses: altinukshini/deployment-action@releases/v1
+      - uses: jackwickham/create-deployment-action@main
         if: ${{ github.ref == 'refs/heads/main' }}
         with:
           token: "${{ github.token }}"
