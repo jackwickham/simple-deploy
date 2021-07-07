@@ -30,7 +30,7 @@
   "devDependencies": {
     "@types/jest": "^26.0.19",
     "@types/js-yaml": "^4.0.1",
-    "@types/lodash": "^4.14.170",
+    "@types/lodash": "^4.14.171",
     "@types/mock-fs": "^4.13.0",
     "@types/node": "^16.0.0",
     "@types/pino": "^6.3.8",
