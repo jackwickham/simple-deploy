@@ -24,7 +24,7 @@
   "dependencies": {
     "@octokit/rest": "^18.6.7",
     "js-yaml": "^4.1.0",
-    "pino": "^6.12.0",
+    "pino": "^6.13.0",
     "probot": "^12.1.0"
   },
   "devDependencies": {
