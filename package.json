@@ -33,7 +33,7 @@
     "@types/lodash": "^4.14.171",
     "@types/mock-fs": "^4.13.1",
     "@types/node": "^16.4.3",
-    "@types/pino": "^6.3.9",
+    "@types/pino": "^6.3.10",
     "@typescript-eslint/eslint-plugin": "^4.28.5",
     "@typescript-eslint/parser": "^4.28.5",
     "eslint": "^7.31.0",
