@@ -22,7 +22,7 @@
     "all": "npm run build && npm run format && npm run lint -- --fix && npm run test"
   },
   "dependencies": {
-    "@octokit/rest": "^18.7.1",
+    "@octokit/rest": "^18.7.2",
     "js-yaml": "^4.1.0",
     "pino": "^6.13.0",
     "probot": "^12.1.0"
