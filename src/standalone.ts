@@ -34,7 +34,7 @@ const fn = async (args: WorkerArgs): Promise<void> => {
       await context.fetch();
       await context.checkout(args.commitHash);
     } catch (e) {
-      log.error(e, "Failed to checkout commit");
+      log.error({err: e}, "Failed to checkout commit");
       await context.report("error");
       return;
     }
@@ -42,13 +42,13 @@ const fn = async (args: WorkerArgs): Promise<void> => {
     try {
       await context.runSteps();
     } catch (e) {
-      log.error(e, "Failed to run steps, rolling back");
+      log.error({err: e}, "Failed to run steps, rolling back");
       try {
         // Roll back
         await context.checkout(initialCommit);
         await context.runSteps();
       } catch (nestedException) {
-        log.error(nestedException, "Failed to roll back");
+        log.error({err: nestedException}, "Failed to roll back");
       }
       await context.report("failure");
       return;
@@ -57,7 +57,7 @@ const fn = async (args: WorkerArgs): Promise<void> => {
     await context.report("success");
     log.info("Deployment successful");
   } catch (e) {
-    log.error(e, "Unhandled exception");
+    log.error({err: e}, "Unhandled exception");
   }
 };
 
