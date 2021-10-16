@@ -1,6 +1,6 @@
 import {spawn} from "child_process";
 import {Octokit} from "@octokit/rest";
-import loggerFactory, {Logger} from "pino";
+import {pino} from "pino";
 import {WorkerArgs} from "./types";
 
 const fn = async (args: WorkerArgs): Promise<void> => {
@@ -8,7 +8,7 @@ const fn = async (args: WorkerArgs): Promise<void> => {
     auth: args.token,
     previews: ["flash"],
   });
-  const log = loggerFactory({
+  const log = pino({
     level: process.env.LOG_LEVEL || "info",
   }).child({
     repoOwner: args.repoOwner,
@@ -64,7 +64,11 @@ const fn = async (args: WorkerArgs): Promise<void> => {
 process.on("message", fn);
 
 class Context {
-  public constructor(private args: WorkerArgs, private octokit: Octokit, private log: Logger) {}
+  public constructor(
+    private args: WorkerArgs,
+    private octokit: Octokit,
+    private log: pino.Logger
+  ) {}
 
   public async getCurrentCommit(): Promise<string> {
     return (await this.exec("git", ["rev-parse", "HEAD"])).trim();

@@ -24,7 +24,7 @@
   "dependencies": {
     "@octokit/rest": "^18.12.0",
     "js-yaml": "^4.1.0",
-    "pino": "^6.13.3",
+    "pino": "^7.0.2",
     "probot": "^12.1.1"
   },
   "devDependencies": {
@@ -33,7 +33,6 @@
     "@types/lodash": "^4.14.175",
     "@types/mock-fs": "^4.13.1",
     "@types/node": "^16.11.0",
-    "@types/pino": "^6.3.11",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "eslint": "^7.32.0",
