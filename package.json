@@ -32,7 +32,7 @@
     "@types/js-yaml": "^4.0.3",
     "@types/lodash": "^4.14.175",
     "@types/mock-fs": "^4.13.1",
-    "@types/node": "^16.11.1",
+    "@types/node": "^16.11.2",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "eslint": "^7.32.0",
