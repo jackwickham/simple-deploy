@@ -37,7 +37,7 @@
     "@typescript-eslint/parser": "^5.10.0",
     "eslint": "^8.7.0",
     "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-jest": "^25.7.0",
+    "eslint-plugin-jest": "^26.0.0",
     "jest": "^27.4.7",
     "lodash": "^4.17.21",
     "mock-fs": "^5.1.2",
