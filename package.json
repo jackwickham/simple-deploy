@@ -28,7 +28,7 @@
     "probot": "^12.2.1"
   },
   "devDependencies": {
-    "@types/jest": "^27.4.0",
+    "@types/jest": "^27.4.1",
     "@types/js-yaml": "^4.0.5",
     "@types/lodash": "^4.14.178",
     "@types/mock-fs": "^4.13.1",
