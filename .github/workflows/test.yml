@@ -12,8 +12,3 @@ jobs:
           npm run build
           npm run check
         name: Build-test
-      - uses: jackwickham/create-deployment-action@main
-        if: ${{ github.ref == 'refs/heads/main' }}
-        with:
-          token: "${{ github.token }}"
-          ref: "${{ github.sha }}"
